@@ -1,9 +1,21 @@
 // 封装axios请求模块
 import axios from 'axios'
+// 引入js后端返回数据超出 JS 安全整数范围问题文件
+import jsonBig from 'json-bigint'
+
 // axios.create: 复制一个axios
 const request = axios.create({
   baseURL: 'http://ttapi.research.itcast.cn/' // 基础路径
 })
+// 配置处理后端返回数据超出js安全整数范围问题
+request.defaults.transformRequest = [function (data) {
+  try {
+    return jsonBig.parse(data)
+  } catch (error) {
+    return {}
+  }
+}]
+
 // 请求拦截器
 request.interceptors.request.use(
   function (config) {
