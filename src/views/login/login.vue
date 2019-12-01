@@ -14,17 +14,14 @@
 
     <!-- 登录按钮 -->
     <div class="login-box">
-      <van-button
-      color="linear-gradient(to right, #4bb0ff, #6149f6)"
-      @click="onLogin"
-      >登录</van-button>
+      <van-button color="linear-gradient(to right, #4bb0ff, #6149f6)" @click="onLogin">登录</van-button>
     </div>
   </div>
 </template>
 
 <script>
-import request from '@/utils/request.js'
-// import {login} from '@/api/user.js'
+import { login } from '@/api/user'
+// import { login } from '@/api/user.js'
 
 export default {
   name: 'LoginPage', // 组件名称:便于调试
@@ -35,6 +32,8 @@ export default {
       user: {
         mobile: '13911111111',
         code: '246810'
+        // mobile: '',
+        // code: ''
       }
     }
   },
@@ -42,15 +41,20 @@ export default {
   created () {},
   methods: {
     async onLogin () {
+      // const loginToast = this.$toast.loading({
+      this.$toast.loading({
+        duration: 0, // 持续时间，0表示持续展示不停止
+        forbidClick: true, // 是否禁止背景点击
+        message: '登录中...' // 提示消息
+      })
       try {
-        const res = await request({
-          method: 'POST',
-          url: '/app/v1_0/authorizations',
-          data: this.user
-        })
+        const res = await login(this.user)
         console.log('登录成功', res)
-      } catch (error) {
-        console.log('登录失败', error)
+        // 提示 success 或者 fail 的时候，会先把其它的 toast 先清除
+        this.$toast.success('登录成功')
+      } catch (err) {
+        console.log('登录失败', err)
+        this.$toast.fail('登录失败，手机号或验证码错误')
       }
     }
   }
@@ -59,9 +63,9 @@ export default {
 
 <style lang="less" scoped>
 .login-box {
-    padding: 20px;
-    .van-button {
-        width: 100%
-    }
+  padding: 20px;
+  .van-button {
+    width: 100%;
+  }
 }
 </style>
