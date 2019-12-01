@@ -2,7 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/views/login/login.vue'
 import Test from '@/views/test/test.vue' // 测试页面
-import Tabbar from '@/views/tabbar/tabbar.vue' // 首页
+import Tabbar from '@/views/tabbar/tabbar.vue'
+import Home from '@/views/home/home.vue'
 
 Vue.use(VueRouter)
 
@@ -16,7 +17,14 @@ const routes = [
   // 首页
   {
     path: '/',
-    component: Tabbar
+    component: Tabbar,
+    children: [
+      // 首页子路由
+      {
+        path: '', // 默认子路由
+        component: Home
+      }
+    ]
   },
   // 测试页面
   {
