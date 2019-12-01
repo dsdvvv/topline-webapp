@@ -5,7 +5,7 @@
 
     <!-- 频道列表 -->
     <van-tabs v-model="active">
-      <van-tab title="标签 1">
+      <van-tab :title="item.name" v-for="item in channels" :key="item.id">
         <!-- 文章列表 -->
         <!-- van-pull-refresh: 下拉刷新功能 -->
         <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
@@ -15,17 +15,12 @@
           </van-list>
         </van-pull-refresh>
       </van-tab>
-      <van-tab title="标签 2">内容 2</van-tab>
-      <van-tab title="标签 3">内容 3</van-tab>
-      <van-tab title="标签 4">内容 4</van-tab>
-      <van-tab title="标签 2">内容 5</van-tab>
-      <van-tab title="标签 3">内容 6</van-tab>
-      <van-tab title="标签 4">内容 7</van-tab>
     </van-tabs>
   </div>
 </template>
 
 <script>
+import { getUserChannels } from '@/api/user'
 export default {
   name: 'HomePage',
   components: {},
@@ -36,13 +31,18 @@ export default {
       list: [],
       loading: false,
       finished: false,
-      isLoading: false // 下拉刷新功能
+      isLoading: false, // 下拉刷新功能
+      channels: [] // 存储请求到的用户频道数据
     }
   },
   computed: {},
   watch: {},
-  created () {},
+  created () {
+    //   获取用户频道列表
+    this.loadUserChannels()
+  },
   methods: {
+    // 列表上滑加载更多功能
     onLoad () {
       // 异步更新数据
       setTimeout(() => {
@@ -64,6 +64,12 @@ export default {
         this.$toast('刷新成功')
         this.isLoading = false
       }, 500)
+    },
+    // 获取用户频道列表
+    async loadUserChannels () {
+      const res = await getUserChannels()
+      console.log(res)
+      this.channels = res.data.data.channels
     }
   }
 }
