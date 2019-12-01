@@ -6,7 +6,9 @@ import {
   NavBar,
   Field,
   Icon,
-  Toast
+  Toast,
+  Tabbar,
+  TabbarItem
 } from 'vant'
 
 Vue
@@ -17,3 +19,5 @@ Vue
   .use(Field)
   .use(Icon)
   .use(Toast)
+  .use(Tabbar)
+  .use(TabbarItem)

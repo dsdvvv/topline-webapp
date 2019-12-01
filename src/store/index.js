@@ -1,18 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { setItem, getItem } from '@/utils/storage'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    // 如果window.localStorage.getItem('store-count')运算为true,则使用它
-    // 如果window.localStorage.getItem('store-count')运算为fasle,则使用 || 后面的
-    // count: Number(window.localStorage.getItem('store-count') || 5)
-    count: 0
+    // 登录用户, 一个对象: 包含token信息
+    user: getItem('user')
   },
   mutations: {
-    increment (state) {
-      state.count++
+    setUser (state, data) {
+      state.user = data
+      // 为了防止刷新页面丢失state中的user状态, 将它放到本地存储中
+      setItem('user', state.user)
     }
   },
   actions: {

@@ -49,7 +49,8 @@ export default {
       })
       try {
         const res = await login(this.user)
-        console.log('登录成功', res)
+        // res.data.data: 存储着token和refresh_token
+        this.$store.commit('setUser', res.data.data)
         // 提示 success 或者 fail 的时候，会先把其它的 toast 先清除
         this.$toast.success('登录成功')
       } catch (err) {

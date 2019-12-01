@@ -2,6 +2,8 @@
 import axios from 'axios'
 // 引入js后端返回数据超出 JS 安全整数范围问题文件
 import jsonBig from 'json-bigint'
+// 引入vuex文件
+import store from '@/store'
 
 // axios.create: 复制一个axios
 const request = axios.create({
@@ -19,6 +21,12 @@ request.defaults.transformResponse = [function (data) {
 // 请求拦截器
 request.interceptors.request.use(
   function (config) {
+    // 统一添加token
+    const user = store.state.user
+    if (user) {
+      config.headers.Authorization = `Bearer ${user.token}`
+    }
+
     // Do something before request is sent
     return config
   },
