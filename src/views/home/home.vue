@@ -64,7 +64,29 @@
       position="bottom" 弹出位置
       :style="{ height: '20%' }" 弹出高度
     -->
-    <van-popup v-model="isChannelShow" closeable position="bottom" :style="{ height: '80%' }" />
+    <van-popup v-model="isChannelShow" closeable position="bottom" :style="{ height: '80%' }">
+      <div class="channel-container">
+        <van-cell title="我的频道" :border="false">
+          <van-button type="danger" size="mini">编辑</van-button>
+        </van-cell>
+        <van-grid :gutter="10">
+          <van-grid-item
+            v-for="value in 8"
+            :key="value"
+            text="文字"
+          />
+        </van-grid>
+
+        <van-cell title="推荐频道" :border="false" />
+        <van-grid :gutter="10">
+          <van-grid-item
+            v-for="value in 8"
+            :key="value"
+            text="文字"
+          />
+        </van-grid>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -195,7 +217,7 @@ export default {
     display: flex;
     align-items: center;
     background-color: #fff;
-    opacity: .8;
+    opacity: 0.8;
   }
   .channel-container {
     padding-top: 30px;
