@@ -1,19 +1,22 @@
 import Vue from 'vue'
 import {
-  Button,
-  Switch,
-  CellGroup,
-  NavBar,
-  Field,
-  Icon,
-  Toast,
-  Tabbar,
+  Button, // 按钮
+  Switch, // 开关
+  NavBar, // 导航栏
+  Field, // 输入框
+  Icon, //  图标
+  Toast, // 轻提示
+  Tabbar, // 标签栏
   TabbarItem,
-  Tab,
+  Tab, // 标签页
   Tabs,
-  List,
-  PullRefresh,
-  Cell
+  List, // 列表
+  PullRefresh, // 下拉刷新
+  Cell, // 单元格
+  CellGroup,
+  Grid, // 宫格
+  GridItem,
+  Image // 图片
 } from 'vant'
 
 Vue
@@ -31,3 +34,6 @@ Vue
   .use(List)
   .use(PullRefresh)
   .use(Cell)
+  .use(Grid)
+  .use(GridItem)
+  .use(Image)
