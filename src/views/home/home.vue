@@ -52,6 +52,10 @@
           </van-list>
         </van-pull-refresh>
       </van-tab>
+      <span>Hello</span>
+      <div class="wap-nav" slot="nav-right" @click="isChannelShow = true">
+        <van-icon name="wap-nav" />
+      </div>
     </van-tabs>
 
     <!-- 频道管理弹窗组件 -->
@@ -59,7 +63,7 @@
       v-model="show" 控制是否展示
       position="bottom" 弹出位置
       :style="{ height: '20%' }" 弹出高度
-     -->
+    -->
     <van-popup v-model="isChannelShow" closeable position="bottom" :style="{ height: '80%' }" />
   </div>
 </template>
@@ -184,6 +188,17 @@ export default {
   // 频道内容
   /deep/ .van-tabs__content {
     margin-top: 90px;
+  }
+  .wap-nav {
+    position: sticky;
+    right: 0;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    opacity: .8;
+  }
+  .channel-container {
+    padding-top: 30px;
   }
 }
 </style>
