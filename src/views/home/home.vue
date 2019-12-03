@@ -64,7 +64,13 @@
       position="bottom" 弹出位置
       :style="{ height: '20%' }" 弹出高度
     -->
-    <van-popup v-model="isChannelShow" closeable position="bottom" :style="{ height: '80%' }">
+    <van-popup
+    v-model="isChannelShow"
+    closeable
+    position="bottom"
+    :style="{ height: '80%' }"
+    @open="onChannelOpen"
+    >
       <div class="channel-container">
         <van-cell title="我的频道" :border="false">
           <van-button type="danger" size="mini">编辑</van-button>
@@ -93,6 +99,7 @@
 <script>
 import { getUserChannels } from '@/api/user'
 import { getArticles } from '@/api/article'
+import { getAllChannels } from '@/api/channel'
 export default {
   name: 'HomePage',
   components: {},
@@ -104,13 +111,16 @@ export default {
       loading: false,
       isLoading: false, // 下拉刷新功能
       channels: [], // 存储请求到的用户频道数据
-      isChannelShow: true // 弹出层
+      isChannelShow: false, // 弹出层
+      allChannels: [] // 所有频道列表
     }
   },
   computed: {},
   watch: {},
   created () {
     //   获取用户频道列表
+    this.loadUserChannels()
+    // 加载用户频道
     this.loadUserChannels()
   },
   methods: {
@@ -187,6 +197,10 @@ export default {
         channel.timestamp = null // 用于获取频道下一页数据的时间戳
       })
       this.channels = channels
+    },
+    async onChannelOpen () {
+      const res = await getAllChannels()
+      this.allChannels = res.data.data.channels
     }
   }
 }
