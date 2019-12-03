@@ -17,7 +17,8 @@ import {
   Grid, // 宫格
   GridItem,
   Image, // 图片
-  Lazyload // 图片懒加载
+  Lazyload, // 图片懒加载
+  Popup // 弹出层
 } from 'vant'
 
 Vue
@@ -39,3 +40,4 @@ Vue
   .use(GridItem)
   .use(Image)
   .use(Lazyload)
+  .use(Popup)

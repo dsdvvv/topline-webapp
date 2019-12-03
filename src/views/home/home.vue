@@ -53,6 +53,14 @@
         </van-pull-refresh>
       </van-tab>
     </van-tabs>
+
+    <!-- 频道管理弹窗组件 -->
+    <!--
+      v-model="show" 控制是否展示
+      position="bottom" 弹出位置
+      :style="{ height: '20%' }" 弹出高度
+     -->
+    <van-popup v-model="isChannelShow" closeable position="bottom" :style="{ height: '80%' }" />
   </div>
 </template>
 
@@ -69,7 +77,8 @@ export default {
       // list: [], // 存储列表中数据
       loading: false,
       isLoading: false, // 下拉刷新功能
-      channels: [] // 存储请求到的用户频道数据
+      channels: [], // 存储请求到的用户频道数据
+      isChannelShow: true // 弹出层
     }
   },
   computed: {},
