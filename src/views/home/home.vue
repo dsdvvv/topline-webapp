@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 导航栏 -->
-    <van-nav-bar title="首页"></van-nav-bar>
+    <van-nav-bar title="首页" fixed />
 
     <!-- 频道列表 -->
     <van-tabs v-model="active">
@@ -37,7 +37,7 @@
               <div slot="label">
                 <van-grid :border="false" :column-num="3">
                   <van-grid-item v-for="(img, index) in item.cover.images" :key="index">
-                    <van-image height="80" :src="img" lazy-load/>
+                    <van-image height="80" :src="img" lazy-load />
                   </van-grid-item>
                 </van-grid>
 
@@ -158,4 +158,23 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.home {
+  .article-info span {
+    margin-top: 10px;
+  }
+}
+.van-tabs {
+  // 频道列表
+  /deep/ .van-tabs__wrap {
+    position: fixed;
+    top: 46px;
+    z-index: 2;
+    right: 0;
+    left: 0;
+  }
+  // 频道内容
+  /deep/ .van-tabs__content {
+    margin-top: 90px;
+  }
+}
 </style>
