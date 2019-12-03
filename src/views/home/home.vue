@@ -44,7 +44,8 @@
                 <div class="article-info">
                   <span>{{ item.aut_name }}</span>
                   <span>{{ item.comm_count }}</span>
-                  <span>{{ item.pubdate }}</span>
+                  <!-- 发布时间 -->
+                  <span>{{ item.pubdate | relativeTime }}</span>
                 </div>
               </div>
             </van-cell>
