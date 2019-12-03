@@ -16,7 +16,8 @@ import {
   CellGroup,
   Grid, // 宫格
   GridItem,
-  Image // 图片
+  Image, // 图片
+  Lazyload // 图片懒加载
 } from 'vant'
 
 Vue
@@ -37,3 +38,4 @@ Vue
   .use(Grid)
   .use(GridItem)
   .use(Image)
+  .use(Lazyload)

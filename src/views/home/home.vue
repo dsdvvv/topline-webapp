@@ -22,13 +22,32 @@
                 3.展示列表
             列表组件(List)在初始化时会自动将loading设置为true,触发load事件
           -->
-          <van-list v-model="loading" :finished="item.finished" finished-text="没有更多了" @load="onLoad">
+          <van-list
+            v-model="loading"
+            :finished="item.finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+          >
             <p>{{ item.name }}</p>
             <van-cell
-            v-for="item in item.articles"
-             :key="item.art_id.toString()"
-             :title="item.title"
-             />
+              v-for="item in item.articles"
+              :key="item.art_id.toString()"
+              :title="item.title"
+            >
+              <div slot="label">
+                <van-grid :border="false" :column-num="3">
+                  <van-grid-item v-for="(img, index) in item.cover.images" :key="index">
+                    <van-image height="80" :src="img" />
+                  </van-grid-item>
+                </van-grid>
+
+                <div class="article-info">
+                  <span>{{ item.aut_name }}</span>
+                  <span>{{ item.comm_count }}</span>
+                  <span>{{ item.pubdate }}</span>
+                </div>
+              </div>
+            </van-cell>
           </van-list>
         </van-pull-refresh>
       </van-tab>
@@ -104,13 +123,14 @@ export default {
         with_top: 1
       })
       const articles = res.data.data.results
-      console.log(articles)
+      // console.log(articles)
       // 2.将获取到的数据放到文章列表顶部
       activeChannel.articles.unshift(...articles)
       // 3.停止下滑刷新loading
       this.isLoading = false
       // 4.提示用户刷新成功
-      const message = articles.length ? `更新了${articles.length}条数据`
+      const message = articles.length
+        ? `更新了${articles.length}条数据`
         : '暂无数据更新'
       this.$toast(message) // toast: 轻提示
 
