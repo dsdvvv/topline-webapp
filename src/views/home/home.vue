@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="home">
     <!-- 导航栏 -->
     <van-nav-bar title="首页" fixed />
 
@@ -65,30 +65,36 @@
       :style="{ height: '20%' }" 弹出高度
     -->
     <van-popup
-    v-model="isChannelShow"
-    closeable
-    position="bottom"
-    :style="{ height: '80%' }"
-    @open="onChannelOpen"
+      v-model="isChannelShow"
+      closeable
+      position="bottom"
+      :style="{ height: '80%' }"
+      @open="onChannelOpen"
     >
       <div class="channel-container">
+        <!-- 我的频道 -->
         <van-cell title="我的频道" :border="false">
-          <van-button type="danger" size="mini">编辑</van-button>
+          <!-- <van-button type="danger" size="mini">编辑</van-button> -->
+          <van-button type="danger" size="mini" @click="isEdit = !isEdit">{{ isEdit ? '完成' : '编辑' }}</van-button>
         </van-cell>
         <van-grid :gutter="10">
           <van-grid-item
-            v-for="channel in channels"
-            :key="channel.id"
-            :text="channel.name"
-          />
+            v-for="(item, index) in channels"
+            :key="item.id"
+            :text="item.name"
+            @click="onChannelActiveOrDelete(item, index)"
+          >
+            <van-icon class="close-icon" slot="icon" name="close" size="14" v-show="isEdit"></van-icon>
+          </van-grid-item>
         </van-grid>
 
         <van-cell title="推荐频道" :border="false" />
         <van-grid :gutter="10">
           <van-grid-item
-            v-for="value in 8"
-            :key="value"
-            text="文字"
+            v-for="item in recommendChannels"
+            :key="item.id"
+            :text="item.name"
+            @click="onChannelAdd(item)"
           />
         </van-grid>
       </div>
@@ -100,6 +106,7 @@
 import { getUserChannels } from '@/api/user'
 import { getArticles } from '@/api/article'
 import { getAllChannels } from '@/api/channel'
+
 export default {
   name: 'HomePage',
   components: {},
@@ -112,10 +119,43 @@ export default {
       isLoading: false, // 下拉刷新功能
       channels: [], // 存储请求到的用户频道数据
       isChannelShow: false, // 弹出层
-      allChannels: [] // 所有频道列表
+      allChannels: [], // 所有频道列表
+      isEdit: false // 控制删除频道关闭按钮的显示
     }
   },
-  computed: {},
+  computed: {
+    /* recommendChannels () {
+      const arr = []
+      // 遍历所有频道
+      this.allChannels.forEach(channel => {
+        // 我的频道列表中是否包含当前遍历项
+        const ret = this.channels.find(item => {
+          return item.id === channel.id
+        })
+        // 如果不包含, 放到arr数组中
+        if (!ret) {
+          arr.push(channel)
+        }
+      })
+      return arr
+    } */
+    recommendChannels () {
+      const arr = []
+      // 遍历所有频道
+      this.allChannels.forEach(channel => {
+        const ret = this.channels.find(item => {
+          return item.id === channel.id
+        })
+
+        // 如果我的频道列表中不包含当前遍历的频道，那我就把它收集到 arr 中
+        if (!ret) {
+          arr.push(channel)
+        }
+      })
+
+      return arr
+    }
+  },
   watch: {},
   created () {
     //   获取用户频道列表
@@ -201,6 +241,20 @@ export default {
     async onChannelOpen () {
       const res = await getAllChannels()
       this.allChannels = res.data.data.channels
+    },
+    onChannelAdd (item) {
+      // 将点击的频道添加到我的频道中
+      this.channels.push(item)
+    },
+    onChannelActiveOrDelete (item, index) {
+      if (this.isEdit) {
+        // 编辑状态, 执行删除操作
+        this.channels.splice(index, 1)
+      } else {
+        // 非编辑状态, 执行频道切换
+        this.active = index
+        this.isChannelShow = false
+      }
     }
   }
 }
@@ -208,6 +262,14 @@ export default {
 
 <style lang="less" scoped>
 .home {
+  /deep/ .channel-container {
+    padding-top: 40px;
+  }
+  /deep/ .van-grid-item__icon-wrapper {
+    position: absolute;
+    top: -10px;
+    right: 0;
+  }
   .article-info span {
     margin-top: 10px;
   }
@@ -233,8 +295,11 @@ export default {
     background-color: #fff;
     opacity: 0.8;
   }
-  .channel-container {
-    padding-top: 30px;
-  }
+  // .home {
+
+  // }
+  // .van-cell {
+  //   padding: 40px
+  // }
 }
 </style>
