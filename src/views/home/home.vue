@@ -82,7 +82,7 @@
             v-for="(item, index) in channels"
             :key="item.id"
             :text="item.name"
-            @click="onChannelActiveOrDelete(item, index)"
+            @click="onChannelActiveOrDelete(index)"
           >
             <van-icon class="close-icon" slot="icon" name="close" size="14" v-show="isEdit"></van-icon>
           </van-grid-item>
@@ -106,6 +106,7 @@
 import { getUserChannels } from '@/api/user'
 import { getArticles } from '@/api/article'
 import { getAllChannels } from '@/api/channel'
+import { setItem, getItem } from '@/utils/storage'
 
 export default {
   name: 'HomePage',
@@ -156,11 +157,13 @@ export default {
       return arr
     }
   },
-  watch: {},
+  watch: {
+    channels () {
+      setItem('channels', this.channels)
+    }
+  },
   created () {
     //   获取用户频道列表
-    this.loadUserChannels()
-    // 加载用户频道
     this.loadUserChannels()
   },
   methods: {
@@ -227,15 +230,24 @@ export default {
     },
     // 获取用户频道列表
     async loadUserChannels () {
-      const res = await getUserChannels()
-      //   console.log(res)
-      const channels = res.data.data.channels
-      channels.forEach(channel => {
+      let channels = []
+      const localChannels = getItem('channels')
+      if (localChannels) {
+        // 如果有本地存储的频道列表就获取使用
+        channels = localChannels
+      } else {
+        // 如果没有则请求线上推荐的频道列表
+        const res = await getUserChannels()
+        //   console.log(res)
+        const onLineChannels = res.data.data.channels
+        onLineChannels.forEach(channel => {
         // 给每一个频道添加一个数据用来存储频道的文章列表
-        channel.articles = []
-        channel.finished = false // 频道的加载结束状态
-        channel.timestamp = null // 用于获取频道下一页数据的时间戳
-      })
+          channel.articles = []
+          channel.finished = false // 频道的加载结束状态
+          channel.timestamp = null // 用于获取频道下一页数据的时间戳
+        })
+        channels = onLineChannels
+      }
       this.channels = channels
     },
     async onChannelOpen () {
@@ -246,7 +258,7 @@ export default {
       // 将点击的频道添加到我的频道中
       this.channels.push(item)
     },
-    onChannelActiveOrDelete (item, index) {
+    onChannelActiveOrDelete (index) {
       if (this.isEdit) {
         // 编辑状态, 执行删除操作
         this.channels.splice(index, 1)
@@ -254,6 +266,8 @@ export default {
         // 非编辑状态, 执行频道切换
         this.active = index
         this.isChannelShow = false
+
+        // setItem('channels', this.channels)
       }
     }
   }
