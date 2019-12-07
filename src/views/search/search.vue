@@ -8,7 +8,7 @@
       @search="onSearch"
       @input="onSerchInput"
     >
-      <div slot="action" @click="onSearch">搜索</div>
+      <div slot="action" @click="onSearch(searchText)">搜索</div>
     </van-search>
     <!-- 联想建议 -->
     <van-cell-group>
@@ -17,6 +17,7 @@
         icon="search"
         v-for="item in suggestions"
         :key="item"
+        @click="onSearch(item)"
       >
         <!-- 我们要把 item 处理成带有高亮的字符串 -->
         <!-- 过滤器：专门用于文本格式化，但是它只能用在 {{}} 和 v-bind 中 -->
@@ -53,8 +54,8 @@ export default {
     }
   },
   methods: {
-    onSearch () {
-
+    onSearch (q) {
+      this.$router.push(`/search/${q}`)
     },
     async onSerchInput () {
       const searchText = this.searchText.trim()

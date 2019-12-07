@@ -5,6 +5,7 @@ import Test from '@/views/test/test.vue' // 测试页面
 import Tabbar from '@/views/tabbar/tabbar.vue'
 import Home from '@/views/home/home.vue'
 import Search from '@/views/search/search.vue'
+import SearchResult from '@/views/search-result'
 
 Vue.use(VueRouter)
 
@@ -31,6 +32,10 @@ const routes = [
   {
     path: '/search',
     component: Search
+  },
+  {
+    path: '/search/:q',
+    component: SearchResult
   },
   // 测试页面
   {
