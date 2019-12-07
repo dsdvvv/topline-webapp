@@ -1,7 +1,17 @@
 <template>
   <div class="home">
     <!-- 导航栏 -->
-    <van-nav-bar title="首页" fixed />
+    <!-- <van-nav-bar title="首页" fixed /> -->
+    <van-nav-bar flxed>
+      <van-button
+        class="search-button"
+        slot="title"
+        round
+        type="info"
+        size="small"
+        @click="$router.push('/search')"
+      >搜索</van-button>
+    </van-nav-bar>
 
     <!-- 频道列表 -->
     <van-tabs v-model="active">
@@ -232,7 +242,7 @@ export default {
         //   console.log(res)
         const onLineChannels = res.data.data.channels
         onLineChannels.forEach(channel => {
-        // 给每一个频道添加一个数据用来存储频道的文章列表
+          // 给每一个频道添加一个数据用来存储频道的文章列表
           channel.articles = []
           channel.finished = false // 频道的加载结束状态
           channel.timestamp = null // 用于获取频道下一页数据的时间戳
@@ -273,6 +283,10 @@ export default {
 
 <style lang="less" scoped>
 .home {
+  .search-button {
+    width: 100%;
+    background-color: #5babfb;
+  }
   /deep/ .channel-container {
     padding-top: 40px;
   }
