@@ -32,10 +32,7 @@
         <span>完成</span>
         <van-icon name="delete" />
       </van-cell>
-      <van-cell title="单元格">
-        <van-icon name="close" />
-      </van-cell>
-      <van-cell title="单元格">
+      <van-cell :title="item" :key="item" v-for="item in searchHistories" @click="onSearch(item)">
         <van-icon name="close" />
       </van-cell>
     </van-cell-group>
@@ -44,17 +41,32 @@
 
 <script>
 import { getSuggestions } from '@/api/search'
+import { getItem, setItem } from '@/utils/storage'
 export default {
   name: 'SearchPage',
   data () {
     return {
       str: 'hello <span style="color: red">world</span>',
       searchText: '', // 用户输入的搜索文本
-      suggestions: [] // 搜索联想建议数据列表
+      suggestions: [], // 搜索联想建议数据列表
+      searchHistories: getItem('search-histories') || [] // 搜索历史记录
     }
   },
   methods: {
     onSearch (q) {
+      if (!q.trim()) {
+        return
+      }
+      // 在跳转之前将搜索的关键字记录到搜索历史中
+      const index = this.searchHistories.indexOf(q)
+      if (index !== 1) {
+        // 不要重复的
+        this.searchHistories.splice(index, 1)
+      }
+      // 最新的放到上面
+      this.searchHistories.unshift(q)
+      // 将搜索历史记录放到本地存储用于持久化
+      setItem('search-histories', this.searchHistories)
       this.$router.push(`/search/${q}`)
     },
     async onSerchInput () {

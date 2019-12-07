@@ -11,3 +11,11 @@ export function getSuggestions (q) {
     }
   })
 }
+// 搜索结果
+export function getSearch (params) {
+  return request({
+    method: 'get',
+    url: '/app/v1_0/search',
+    params
+  })
+}
