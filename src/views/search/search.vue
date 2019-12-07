@@ -43,6 +43,8 @@
 <script>
 import { getSuggestions } from '@/api/search'
 import { getItem, setItem } from '@/utils/storage'
+import { debounce } from 'lodash'
+
 export default {
   name: 'SearchPage',
   data () {
@@ -77,14 +79,22 @@ export default {
       setItem('search-histories', this.searchHistories)
       this.$router.push(`/search/${q}`)
     },
-    async onSerchInput () {
+    /* async onSerchInput () {
       const searchText = this.searchText.trim()
       if (!searchText) {
         return
       }
       const res = await getSuggestions(this.searchText)
       this.suggestions = res.data.data.options
-    },
+    }, */
+    onSearchInput: debounce(async function () {
+      const searchText = this.searchText.trim()
+      if (!searchText) {
+        return
+      }
+      const res = await getSuggestions(this.searchText)
+      this.suggestions = res.data.data.options
+    }, 300),
     highlight (str) {
       /*
         this.searchText: 这里一切都是字符串
