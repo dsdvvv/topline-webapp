@@ -82,9 +82,15 @@
             v-for="(item, index) in channels"
             :key="item.id"
             :text="item.name"
-            @click="onChannelActiveOrDelete(index)"
+            @click="onChannelActiveOrDelete(item, index)"
           >
-            <van-icon class="close-icon" slot="icon" name="close" size="14" v-show="isEdit"></van-icon>
+            <van-icon
+              class="close-icon"
+              slot="icon"
+              name="close"
+              size="14"
+              v-show="isEdit && item.name !== '推荐'"
+            ></van-icon>
           </van-grid-item>
         </van-grid>
 
@@ -125,21 +131,6 @@ export default {
     }
   },
   computed: {
-    /* recommendChannels () {
-      const arr = []
-      // 遍历所有频道
-      this.allChannels.forEach(channel => {
-        // 我的频道列表中是否包含当前遍历项
-        const ret = this.channels.find(item => {
-          return item.id === channel.id
-        })
-        // 如果不包含, 放到arr数组中
-        if (!ret) {
-          arr.push(channel)
-        }
-      })
-      return arr
-    } */
     recommendChannels () {
       const arr = []
       // 遍历所有频道
@@ -252,14 +243,20 @@ export default {
     },
     async onChannelOpen () {
       const res = await getAllChannels()
-      this.allChannels = res.data.data.channels
+      const allChannels = res.data.data.channels
+      allChannels.forEach(channel => {
+        channel.articles = [] // 频道的文章列表
+        channel.finished = false // 频道的加载结束状态
+        channel.timestamp = null // 获取频道下一页数据的时间戳
+      })
+      this.allChannels = allChannels
     },
     onChannelAdd (item) {
       // 将点击的频道添加到我的频道中
       this.channels.push(item)
     },
-    onChannelActiveOrDelete (index) {
-      if (this.isEdit) {
+    onChannelActiveOrDelete (item, index) {
+      if (this.isEdit && item.name !== '推荐') {
         // 编辑状态, 执行删除操作
         this.channels.splice(index, 1)
       } else {
@@ -309,11 +306,5 @@ export default {
     background-color: #fff;
     opacity: 0.8;
   }
-  // .home {
-
-  // }
-  // .van-cell {
-  //   padding: 40px
-  // }
 }
 </style>
