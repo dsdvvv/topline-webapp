@@ -2,7 +2,7 @@
   <div class="search">
     <!-- 搜索框 -->
     <van-search
-      v-model="searchText"
+
       placeholder="请输入搜索关键词"
       show-action
       @search="onSearch"
@@ -11,7 +11,7 @@
       <div slot="action" @click="onSearch(searchText)">搜索</div>
     </van-search>
     <!-- 联想建议 -->
-    <van-cell-group>
+    <van-cell-group v-model="searchText">
       <van-cell
         title="单元格"
         icon="search"
@@ -23,17 +23,18 @@
         <!-- 过滤器：专门用于文本格式化，但是它只能用在 {{}} 和 v-bind 中 -->
         <div slot="title" v-html="highlight(item)"></div>
       </van-cell>
-
     </van-cell-group>
     <!-- 搜索历史记录 -->
     <van-cell-group>
       <van-cell title="历史记录">
-        <span>全部删除</span>&nbsp;&nbsp;
-        <span>完成</span>
-        <van-icon name="delete" />
+        <div v-show="isDeleteShow">
+          <span @click="searchHistories = []">全部删除</span>&nbsp;&nbsp;
+          <span @click="isDeleteShow = false">完成</span>
+        </div>
+        <van-icon name="delete" v-show="!isDeleteShow" @click="isDeleteShow = true" />
       </van-cell>
-      <van-cell :title="item" :key="item" v-for="item in searchHistories" @click="onSearch(item)">
-        <van-icon name="close" />
+      <van-cell :title="item" :key="item" v-for="(item, index) in searchHistories" @click="onSearch(item)">
+        <van-icon name="close" v-show="isDeleteShow" @click="searchHistories.splice(index, 1)" />
       </van-cell>
     </van-cell-group>
   </div>
@@ -49,7 +50,14 @@ export default {
       str: 'hello <span style="color: red">world</span>',
       searchText: '', // 用户输入的搜索文本
       suggestions: [], // 搜索联想建议数据列表
-      searchHistories: getItem('search-histories') || [] // 搜索历史记录
+      searchHistories: getItem('search-histories') || [], // 搜索历史记录
+      isDeleteShow: false // 控制删除历史记录的显示状态
+    }
+  },
+  watch: {
+    searchHistories () {
+      console.log('监视到 searchHistories 改变了')
+      setItem('search-histories', this.searchHistories)
     }
   },
   methods: {
@@ -85,7 +93,10 @@ export default {
         参数2: 用来指定匹配模式, 例如 g: 全局; i: 忽略大小写
       */
       const reg = new RegExp(this.searchText, 'ig')
-      return str.replace(reg, `<span style="color: red">${this.searchText}</span>`)
+      return str.replace(
+        reg,
+        `<span style="color: red">${this.searchText}</span>`
+      )
     }
   }
 }
