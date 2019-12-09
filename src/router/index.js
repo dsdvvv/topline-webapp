@@ -44,8 +44,9 @@ const routes = [
   },
   {
     name: 'article',
-    path: '/article',
-    component: Article
+    path: '/article/:articleId',
+    component: Article,
+    props: true
   },
   // 测试页面
   {

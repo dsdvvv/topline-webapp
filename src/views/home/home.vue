@@ -39,10 +39,20 @@
             @load="onLoad"
           >
             <p>{{ item.name }}</p>
+
             <van-cell
               v-for="item in item.articles"
               :key="item.art_id.toString()"
               :title="item.title"
+               @click="$router.push({
+                name: 'article',
+                // params 是固定的
+                params: {
+                  // key：动态路径参数的名字
+                  // value：数据值
+                  articleId: item.art_id
+                }
+              })"
             >
               <div slot="label">
                 <van-grid :border="false" :column-num="3">

@@ -6,7 +6,7 @@
       placeholder="请输入搜索关键词"
       show-action
       @search="onSearch"
-      @input="onSerchInput"
+      @input="onSearchInput"
     >
       <div slot="action" @click="onSearch(searchText)">搜索</div>
     </van-search>
