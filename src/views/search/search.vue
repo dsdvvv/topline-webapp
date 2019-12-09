@@ -2,7 +2,7 @@
   <div class="search">
     <!-- 搜索框 -->
     <van-search
-
+      v-model="searchTextc"
       placeholder="请输入搜索关键词"
       show-action
       @search="onSearch"
@@ -10,6 +10,7 @@
     >
       <div slot="action" @click="onSearch(searchText)">搜索</div>
     </van-search>
+
     <!-- 联想建议 -->
     <van-cell-group v-model="searchText">
       <van-cell
@@ -87,6 +88,8 @@ export default {
       const res = await getSuggestions(this.searchText)
       this.suggestions = res.data.data.options
     }, */
+
+    // 联想建议
     onSearchInput: debounce(async function () {
       const searchText = this.searchText.trim()
       if (!searchText) {
