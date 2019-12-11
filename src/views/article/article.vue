@@ -39,7 +39,7 @@
           plain
           icon="good-job-o"
           @click="onLike"
-        >{{ article.attitdule === 0 ? '取消不喜欢' : '不喜欢' }}</van-button>
+        >{{ article.attitdule === 0 ? '取消点赞' : '点赞' }}</van-button>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <van-button
           round
@@ -48,7 +48,8 @@
           type="danger"
           plain
           icon="delete"
-        >不喜欢</van-button>
+          @click="onDislike"
+        >{{ article.attitdule === 0 ? '取消喜欢' : '喜欢' }}</van-button>
       </div>
     </div>
     <!-- /文章详情 -->
@@ -62,7 +63,7 @@
 </template>
 
 <script>
-import { getArticle, addLike, deleteLike } from '@/api/article'
+import { getArticle, addLike, deleteLike, addDislike, deleteDislike } from '@/api/article'
 import { followUser, unFollowUser } from '@/api/user'
 
 export default {
@@ -124,6 +125,18 @@ export default {
         // 如果未关注则关注
         await addLike(this.articleId)
         this.article.attitude = 1
+      }
+    },
+    // 喜欢与取消喜欢文章
+    async onDislike () {
+      // 如果已关注，则取消关注
+      if (this.article.attitude === 0) {
+        await deleteDislike(this.articleId)
+        this.article.attitude = -1
+      } else {
+        // 如果没有关注，则关注
+        await addDislike(this.articleId)
+        this.article.attitude = 0
       }
     }
 
