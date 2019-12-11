@@ -17,7 +17,7 @@
     <div class="detail" v-else-if="article.title">
       <h3 class="title">{{ article.title }}</h3>
       <div class="author">
-        <van-image round width="2rem" height="2rem" fit="fill" :src="article.aut_photo" />
+        <van-image round width="1rem" height="1rem" fit="fill" :src="article.aut_photo" />
         <div class="text">
           <p class="name">{{ article.aut_name }}</p>
           <p class="time">{{ article.pubdate | relativeTime }}</p>
@@ -26,13 +26,29 @@
           round
           size="small"
           type="info"
-        >+ 关注</van-button>
+          @click="onFollow"
+        >{{ article.is_followed ? '取消关注' : '+ 关注' }}</van-button>
       </div>
       <div class="content" v-html="article.content" />
       <div class="zan">
-        <van-button round size="small" hairline type="primary" plain icon="good-job-o">点赞</van-button>
+        <van-button
+          round
+          size="small"
+          hairline
+          type="primary"
+          plain
+          icon="good-job-o"
+          @click="onLike"
+        >{{ article.attitdule === 0 ? '取消不喜欢' : '不喜欢' }}</van-button>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <van-button round size="small" hairline type="danger" plain icon="delete">不喜欢</van-button>
+        <van-button
+          round
+          size="small"
+          hairline
+          type="danger"
+          plain
+          icon="delete"
+        >不喜欢</van-button>
       </div>
     </div>
     <!-- /文章详情 -->
@@ -46,7 +62,8 @@
 </template>
 
 <script>
-import { getArticle } from '@/api/article'
+import { getArticle, addLike, deleteLike } from '@/api/article'
+import { followUser, unFollowUser } from '@/api/user'
 
 export default {
   name: 'ArticleIndex',
@@ -66,10 +83,12 @@ export default {
     this.loadArticle()
   },
   methods: {
+    // 展示文章基本数据及loading
     async loadArticle () {
-      const res = await getArticle(this.articleId)
-      this.article = res.data.data
-      console.log(this.article)
+      // this.articleId.toString()
+      // const res = await getArticle(this.articleId.toString())
+      // this.article = res.data.data
+      // console.log(this.article)
       // 开启loading
       this.loading = true
       try {
@@ -81,7 +100,33 @@ export default {
       }
       // 无论成功还是失败都结束loading的加载状态
       this.loading = false
+    },
+    // 关注与取消关注
+    async onFollow () {
+      const userId = this.article.aut_id
+      // 如果已关注则取消关注
+      if (this.article.is_followed) {
+        await unFollowUser(userId)
+      } else {
+        // 如果未关注则点击关注
+        await followUser(userId)
+      }
+      // 更新视图
+      this.article.is_followed = !this.article.is_followed
+    },
+    // 点赞与取消点赞
+    async onLike () {
+      // 如果已关注则取消
+      if (this.article.attitude === 1) {
+        await deleteLike(this.articleId)
+        this.article.attitude = -1
+      } else {
+        // 如果未关注则关注
+        await addLike(this.articleId)
+        this.article.attitude = 1
+      }
     }
+
   }
 }
 </script>
@@ -133,6 +178,7 @@ export default {
     overflow: hidden;
     white-space: pre-wrap;
     word-break: break-all;
+    font-size: 18px;
     /deep/ img{
       max-width:100%;
       background: #f9f9f9;
